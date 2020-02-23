@@ -1,0 +1,1 @@
+/home/youm/work/src/github.com/youmslinky/vimrc/vimrc
