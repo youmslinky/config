@@ -17,6 +17,8 @@ if ! filereadable(expand('~/.vim/autoload/plug.vim'))
 	autocmd VimEnter * PlugInstall
 endif
 
+let g:plug_url_format = "git@github.com:%s.git"
+
 " Plugins will be downloaded under the specified directory.
 call plug#begin()
 
