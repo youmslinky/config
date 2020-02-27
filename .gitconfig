@@ -1,0 +1,7 @@
+[user]
+	email = youmslinky1@gmail.com
+	name = youmslinky
+[pull]
+	rebase = true
+[rebase]
+	autoStash = true
