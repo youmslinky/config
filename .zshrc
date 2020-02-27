@@ -132,7 +132,7 @@ zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # rust path
-#source ~/.cargo/env
+source ~/.cargo/env
 
 # fzf stuff
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
