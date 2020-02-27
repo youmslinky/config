@@ -108,11 +108,11 @@ ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS+=(vi-forward-char)
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
-else
-  export EDITOR='vim'
-fi
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='vim'
+# fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -148,4 +148,4 @@ function save_screenshot_clipboard {
 }
 
 # use config to manage configuration files from config repo
-alias config='/usr/bin/git --git-dir=/home/youm/.cfg/ --work-tree=/home/youm'
+alias conf='/usr/bin/git --git-dir=/home/youm/.cfg/ --work-tree=/home/youm'
