@@ -438,6 +438,9 @@ nnoremap <leader>l :ls<cr>:b<space>
 "disabled because ^c needed to interupt long running commands
 "nnoremap <c-p> "+P
 
+autocmd VimLeave * call system('echo -n ' . shellescape(getreg('+')) .
+            \ ' | xclip -selection clipboard')
+
 "escape from terminal
 tnoremap jk <c-\><c-n>
 
