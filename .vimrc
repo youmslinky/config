@@ -45,9 +45,33 @@ Plug 'dhruvasagar/vim-table-mode'
 Plug '~/.fzf'
 Plug 'rickhowe/diffchar.vim'
 Plug 'roxma/vim-tmux-clipboard'
+Plug 'lervag/vimtex'
+
+" ultisnips engine
+Plug 'SirVer/ultisnips'
+" Snippets are separated from the engine.
+Plug 'honza/vim-snippets'
+
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
+
+" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<c-h>"
+"let g:UltiSnipsListSnippets="<c-tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+
+"start vim remote server (needed for vimtex)
+"if empty(v:servername) && exists('*remote_startserver')
+"  call remote_startserver('VIM')
+"endif
+
+"use zathura as our tex viewer
+let g:vimtex_view_method = 'zathura'
 
 "enable all vim-python syntax highlighting
 let g:python_highlight_all = 1
