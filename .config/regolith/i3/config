@@ -110,11 +110,13 @@ bindsym $mod+a focus parent
 # change focus between tiling / floating windows
 bindsym $mod+Shift+t focus mode_toggle
 
-# split in horizontal orientation
-bindsym $mod+p split h
-
+#this is backwards from vim, and I like vim's better
 # split in vertical orientation
-bindsym $mod+v split v
+bindsym $mod+v split h
+
+#this is backwards from vim, and I like vim's better
+# split in horizontal orientation
+bindsym $mod+p split v
 
 # toggle tabbed mode
 bindsym $mod+t layout toggle tabbed splith splitv
