@@ -89,8 +89,9 @@ command=/usr/share/i3xrocks/rofication-statusi3blocks.py
 interval=10
 
 # Date Time
-[time]
-interval=10
+# jdk changed this to time2 to get am/pm
+[time2]
+interval=1
 
 # Show title of focused window
 #[focused-window-name]
