@@ -150,3 +150,21 @@ function save_screenshot_clipboard {
 # use config to manage configuration files from config repo
 alias conf='/usr/bin/git --git-dir=/home/youm/.cfg/ --work-tree=/home/youm'
 compdef _git conf
+
+thingiverseUnzip()
+{(  # use a subshell so it doesn't kill terminal when error
+    # exit when any command fails
+    set -e
+
+	main_dir=$HOME/Documents/3dprinting
+    zip_file=$(find $HOME/Downloads -type f -name '*.zip' -printf "%C@ %p\n" | sort -nr | awk -F ' ' '{print $2}' | fzf)
+    basename=$(basename $zip_file)
+	subdir=$main_dir/${basename%.zip}
+
+	#echo "creating dir $subdir"
+	mkdir -v $subdir
+	echo "unzipping $zip_file into $subdir"
+	unzip $zip_file -d $subdir
+	echo "removing original file: $zip_file"
+	rm $zip_file
+)}
