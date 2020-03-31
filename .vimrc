@@ -238,7 +238,7 @@ set notimeout ttimeout ttimeoutlen=200
 set pastetoggle=<F11>
 
 " Set paranthenisis hightlight cursor
-hi MatchParen cterm=none ctermbg=blue ctermfg=none
+hi MatchParen cterm=none ctermbg=Green ctermfg=none
 
 " Change the cursor color in xterm
 " if &term =~ "xterm\\|rxvt"
@@ -488,3 +488,6 @@ function! s:DiffWithSVNCheckedOut()
   exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
 endfunction
 com! DiffSVN call s:DiffWithSVNCheckedOut()
+
+"set search color to be better for regolith luke smith st
+highlight Search ctermbg=LightYellow
