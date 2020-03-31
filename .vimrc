@@ -490,4 +490,5 @@ endfunction
 com! DiffSVN call s:DiffWithSVNCheckedOut()
 
 "set search color to be better for regolith luke smith st
-highlight Search ctermbg=LightYellow
+hi Search ctermbg=LightYellow
+hi Search ctermfg=DarkBlue
