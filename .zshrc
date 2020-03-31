@@ -149,3 +149,4 @@ function save_screenshot_clipboard {
 
 # use config to manage configuration files from config repo
 alias conf='/usr/bin/git --git-dir=/home/youm/.cfg/ --work-tree=/home/youm'
+compdef _git conf
