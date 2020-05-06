@@ -68,6 +68,7 @@ plugins=(
   zsh-autosuggestions
   vi-mode
   z
+  colored-man-pages
   #per-directory-history
 )
 
