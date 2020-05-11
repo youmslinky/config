@@ -44,8 +44,6 @@ Plug 'AndrewRadev/linediff.vim'
 Plug 'dhruvasagar/vim-table-mode'
 Plug '~/.fzf'
 Plug 'rickhowe/diffchar.vim'
-Plug 'roxma/vim-tmux-clipboard'
-Plug 'lervag/vimtex'
 
 " ultisnips engine
 Plug 'SirVer/ultisnips'
@@ -64,14 +62,6 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
-
-"start vim remote server (needed for vimtex)
-"if empty(v:servername) && exists('*remote_startserver')
-"  call remote_startserver('VIM')
-"endif
-
-"use zathura as our tex viewer
-let g:vimtex_view_method = 'zathura'
 
 "enable all vim-python syntax highlighting
 let g:python_highlight_all = 1
