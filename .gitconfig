@@ -5,3 +5,8 @@
 	rebase = true
 [rebase]
 	autoStash = true
+[http]
+	sslcainfo=/c/Users/jonathan.kuhn/AppData/Local/Programs/Git/mingw64/ssl/certs
+	sslbackend=schannel
+[status]
+	showUntrackedFiles = no
