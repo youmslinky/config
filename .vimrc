@@ -272,8 +272,8 @@ map Y y$
 
 " Map <C-/> (redraw screen) to also turn off search highlighting until the
 " next search
-nnoremap <C-/> :nohl<CR><C-L>
-nnoremap <leader>/ :nohl<CR><C-L>
+nnoremap <silent> <C-/> :nohl<CR><C-L>
+nnoremap <silent> <leader>/ :nohl<CR><C-L>
 
 "------------------------------------------------------------
 
