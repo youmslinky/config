@@ -392,6 +392,9 @@ nnoremap <silent> <leader>m :call search("testid = ",'Wb')<cr>
 "switch (y) option (o) fixed (turns on scrollbind)
 nnoremap <silent> yof :set scrollbind!<cr>
 
+"switch clipboard between "" and unnamedplus
+nnoremap yoy :set clipboard=<c-r>=&clipboard == "" ? "unnamedplus" : ""<cr><cr>
+
 "close buffer without closing window
 nnoremap <silent> Q :bp<bar>bd #<cr>
 
