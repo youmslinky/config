@@ -48,9 +48,9 @@ Plug '~/.fzf'
 Plug 'rickhowe/diffchar.vim'
 
 " ultisnips engine
-Plug 'SirVer/ultisnips'
+"Plug 'SirVer/ultisnips'
 " Snippets are separated from the engine.
-Plug 'honza/vim-snippets'
+"Plug 'honza/vim-snippets'
 
 
 " List ends here. Plugins become visible to Vim after this call.
