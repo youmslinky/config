@@ -336,9 +336,12 @@ nnoremap <leader>rv :so $MYVIMRC<cr>
 "reload vimrc when writing
 autocmd BufWritePost *vimrc :so $MYVIMRC
 
-"find something in ATL files recursively in current directory
+"find something in .c and .h files
 nnoremap <f5> :exec 'vimgrep /'.input('grep what? ').'/ ./**/*.ATL <bar> cw'<cr>
-nnoremap <leader>ga :exec 'vimgrep /'.input('grep what? ').'/ ./**/*.ATL <bar> cw'<cr>
+nnoremap <leader>ga :exec 'vimgrep /' . input('grep what? ') . '/ ./**/*.{c,h} <bar> cw' <cr>
+
+"find something in .c and .h files gf =>grep find
+nnoremap ,gf :exec 'vimgrep '.expand('<cword>').' ./**/*.{c,h} <bar> copen'<cr>
 
 "yank entire word under cursor to clipboard
 "map <C-C> "+yiW
