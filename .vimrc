@@ -361,7 +361,7 @@ set listchars=eol:¶,tab:>-,trail:.,extends:>,precedes:<,nbsp:_
 
 " Disables automatic commenting on newline:
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-:nnoremap <silent> <leader>f :let _s=@/ <Bar> :%s/\s\+$//e <Bar> :let @/=_s <Bar> :nohl <Bar> :unlet _s <CR>
+nnoremap <silent> <leader>f :let _s=@/ <Bar> :%s/\s\+$//e <Bar> :let @/=_s <Bar> :nohl <Bar> :unlet _s <CR>
 
 "toggle locking cursor in middle of screen
 nnoremap <silent> <Leader>zz :let &scrolloff=999-&scrolloff<CR>
