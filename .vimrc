@@ -27,6 +27,8 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-obsession'
+
 Plug 'michaeljsmith/vim-indent-object'
 "Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 Plug 'justinmk/vim-sneak'
@@ -482,3 +484,20 @@ com! DiffSVN call s:DiffWithSVNCheckedOut()
 "set search color to be better for regolith luke smith st
 hi Search ctermbg=LightYellow
 hi Search ctermfg=DarkBlue
+
+"simple vim session managment
+"https://dockyard.com/blog/2018/06/01/simple-vim-session-management-part-2
+"I didn't use the tabline stuff because I don't normally have a tabline
+let g:session_dir = '~/vim-sessions'
+"session save ss
+exec 'nnoremap <Leader>ss :Obsession ' . g:session_dir . '/*.vim<C-D><BS><BS><BS><BS><BS>'
+"session restore sr
+exec 'nnoremap <Leader>sr :so ' . g:session_dir. '/*.vim<C-D><BS><BS><BS><BS><BS>'
+"session pause sp
+nnoremap <Leader>sp :Obsession<CR>
+
+"temporary testid highlighting
+match CursorLineNr /\v(SetTestID.*\()@<=\d+/
+
+"cancel and escape from command line with jk
+cmap jk <c-u><esc>
