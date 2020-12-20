@@ -36,6 +36,7 @@ Plug 'dbeniamine/cheat.sh-vim'
 Plug 'mhinz/vim-signify'
 Plug 'w0rp/ale'
 Plug 'vim-python/python-syntax'
+Plug 'psf/black', { 'branch': 'stable' }
 Plug 'reedes/vim-pencil'
 Plug 'kana/vim-textobj-user'
 "numeral textobjects 2.2 3e6 etc
@@ -75,6 +76,9 @@ let g:vimtex_view_method = 'zathura'
 
 "enable all vim-python syntax highlighting
 let g:python_highlight_all = 1
+
+"run black autoformmater before save for python files
+autocmd BufWritePre *.py execute ':Black'
 
 "overide unimpaired plugin next tag, prev tag
 nnoremap ]t :tabnext<cr>
