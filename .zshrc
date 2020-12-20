@@ -161,7 +161,6 @@ compdef _git conf
 thingiverseUnzip()
 {(  # use a subshell so it doesn't kill terminal when error
     # exit when any command fails
-    set -e
 
 	main_dir=$HOME/Documents/3dprinting
     zip_file=$(find $HOME/Downloads -type f -name '*.zip' -printf "%C@ %p\n" | sort -nr | awk -F ' ' '{print $2}' | fzf)
@@ -169,9 +168,9 @@ thingiverseUnzip()
 	subdir=$main_dir/${basename%.zip}
 
 	#echo "creating dir $subdir"
-	mkdir -v $subdir
+	mkdir -v $subdir || exit 1
 	echo "unzipping $zip_file into $subdir"
-	unzip $zip_file -d $subdir
+	unzip $zip_file -d $subdir || exit 1
 	echo "removing original file: $zip_file"
-	rm $zip_file
+	rm $zip_file || exit 1
 )}
