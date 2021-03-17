@@ -52,6 +52,11 @@ Plug 'lervag/vimtex'
 Plug 'SirVer/ultisnips'
 " Snippets are separated from the engine.
 Plug 'honza/vim-snippets'
+" local_vimrc needs this other lib
+Plug 'LucHermitte/lh-vim-lib'
+Plug 'LucHermitte/local_vimrc'
+Plug 'jremmen/vim-ripgrep'
+
 
 
 " List ends here. Plugins become visible to Vim after this call.
