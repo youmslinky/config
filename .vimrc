@@ -474,7 +474,7 @@ set undodir=~/.vim/undo-dir
 set undofile
 
 " make command
-nnoremap <leader>m :!make<cr>
+nnoremap <leader>m :Make<cr>
 
 function! s:DiffWithSaved()
   let filetype=&ft
