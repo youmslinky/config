@@ -166,7 +166,6 @@ compdef _git conf
 
 thingiverseUnzip()
 {(  # use a subshell so it doesn't kill terminal when error
-    # exit when any command fails
 
 	main_dir=$HOME/Documents/3dprinting
     zip_file=$(find $HOME/Downloads -type f -name '*.zip' -printf "%C@ %p\n" | sort -nr | awk -F ' ' '{print $2}' | fzf)
@@ -180,3 +179,7 @@ thingiverseUnzip()
 	echo "removing original file: $zip_file"
 	rm $zip_file || exit 1
 )}
+
+# swallow completion config
+compdef _path_commands swallow
+
