@@ -183,3 +183,5 @@ thingiverseUnzip()
 # swallow completion config
 compdef _path_commands swallow
 
+
+alias qr='qrencode -m 2 -t utf8 <<< "$1"'
