@@ -106,6 +106,9 @@ bindkey -M vicmd "j" down-line-or-beginning-search
 bindkey '^U' kill-whole-line
 bindkey -M vicmd "^U" kill-whole-line
 
+# set to bash default alt+. to cycle through last arguments in command history
+bindkey '\e.' insert-last-word
+
 # change color of autosuggest
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=5'
 
