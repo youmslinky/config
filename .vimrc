@@ -41,18 +41,23 @@ Plug 'vim-python/python-syntax'
 Plug 'reedes/vim-pencil'
 Plug 'kana/vim-textobj-user'
 "numeral textobjects 2.2 3e6 etc
-Plug 'tkhren/vim-textobj-numeral'
+"Plug 'tkhren/vim-textobj-numeral'
 Plug 'AndrewRadev/linediff.vim'
 Plug 'dhruvasagar/vim-table-mode'
 Plug '~/.fzf'
 Plug 'rickhowe/diffchar.vim'
+Plug 'rust-lang/rust.vim'
+Plug 'jremmen/vim-ripgrep'
+Plug 'preservim/tagbar'
+"Plug 'stevearc/vim-arduino'
+"Plug 'MattesGroeger/vim-bookmarks'
 
 " ultisnips engine
 "Plug 'SirVer/ultisnips'
 " Snippets are separated from the engine.
 "Plug 'honza/vim-snippets'
 
-
+Plug 'andymass/vim-visput'
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
 
@@ -89,7 +94,7 @@ nnoremap <leader>M :MundoToggle<cr>
 "##################
 
 "set colorscheme
-colo slate
+colo murphy
 
 " based on example vimrc from: http://vim.wikia.com/wiki/Example_vimrc
 "
@@ -191,14 +196,15 @@ set ruler
 " Status Line (curly braces just denote all status line commands) {
         set laststatus=2                             " always show statusbar
         set statusline=
-        set statusline+=%-10.3n\                     " buffer number
-        set statusline+=%f\                          " filename
-        set statusline+=%h%m%r%w                     " status flags
-        set statusline+=\[%{strlen(&ft)?&ft:'none'}] " file type
-        set statusline+=%=                           " right align remainder
-        set statusline+=0x%-8B                       " character value
-        set statusline+=%-14(%l,%c%V%)               " line, character
-        set statusline+=%<%P                         " file position
+        set statusline+=%-10.3n\                             " buffer number
+        set statusline+=%f\                                  " filename
+        set statusline+=%h%m%r%w                             " status flags
+        set statusline+=\[%{strlen(&ft)?&ft:'none'}]\        " file type
+        set statusline+=%{tagbar#currenttag('%s\ ','','f')}  " current tag (provided by tagbar plugin)
+        set statusline+=%=                                   " right align remainder
+        set statusline+=0x%-8B                               " character value
+        set statusline+=%-14(%l,%c%V%)                       " line, character
+        set statusline+=%<%P                                 " file position
 "}
 
 " Instead of failing a command because of unsaved changes, instead raise a
@@ -244,6 +250,30 @@ hi MatchParen cterm=none ctermbg=Green ctermfg=none
 "     " use \003]12;gray\007 for gnome-terminal
 "endif
 
+"Mon 12/14/20 11:41:35
+" Cursor in terminal
+" https://vim.fandom.com/wiki/Configuring_the_cursor
+" 1 or 0 -> blinking block
+" 2 solid block
+" 3 -> blinking underscore
+" 4 solid underscore
+" Recent versions of xterm (282 or above) also support
+" 5 -> blinking vertical bar
+" 6 -> solid vertical bar
+
+if &term =~ '^xterm'
+	" normal mode
+	let &t_EI .= "\<Esc>[0 q"
+	" insert mode
+	let &t_SI .= "\<Esc>[6 q"
+endif
+
+" enable local .vimrc and .exrc (in vim); .nvimrc and .exrc (in neovim?)
+set exrc
+
+" disable autocmnd, shell, and write commands in local .nvimrc, .exrc, .vimrc for security
+set secure
+
 "------------------------------------------------------------
 " Indentation options {{{1
 "
@@ -286,9 +316,19 @@ if has("win32")
   "source a windows only file
   "opens the directory of current file
   nnoremap <leader>x :!explorer %:h<cr><cr>
+  noremap <silent> <leader>n :e ~/notes.txt <bar> norm G <CR>
+
 else
   if has("unix")
-    let s:uname = system("uname")
+    " Are we running in WSL?
+    let s:uname = substitute(system('uname'),'\n','','')
+    if s:uname == 'Linux'
+        let s:lines = readfile("/proc/version")
+        if s:lines[0] =~ "Microsoft"
+          let s:wsl = 1
+        endif
+    endif
+    noremap <silent> <leader>n :e /mnt/c/Users/Jonathan.kuhn/notes.txt <bar> norm G <CR>
   endif
 endif
 
@@ -334,14 +374,34 @@ nnoremap <leader>ev :sp $MYVIMRC<cr>
 nnoremap <leader>rv :so $MYVIMRC<cr>
 
 "reload vimrc when writing
-autocmd BufWritePost *vimrc :so $MYVIMRC
+"autocmd BufWritePost *vimrc :so $MYVIMRC
+
+" Reloads vimrc after saving it but keep cursor position
+if !exists('*ReloadVimrcFunction')
+    function! ReloadVimrcFunction()
+        let save_cursor = getcurpos()
+        source $MYVIMRC | windo redraw
+        call setpos('.', save_cursor)
+        echom "Reloaded $MYVIMRC"
+    endfunction
+endif
+command! -nargs=0 ReloadVimrc :call ReloadVimrcFunction()
+
+"use an augroup so the autocomand isn't loaded multiple times
+augroup Reload
+    autocmd!
+    autocmd BufWritePost *vimrc call ReloadVimrcFunction()
+augroup END
 
 "find something in .c and .h files
 nnoremap <f5> :exec 'vimgrep /'.input('grep what? ').'/ ./**/*.ATL <bar> cw'<cr>
 nnoremap <leader>ga :exec 'vimgrep /' . input('grep what? ') . '/ ./**/*.{c,h} <bar> cw' <cr>
 
 "find something in .c and .h files gf =>grep find
-nnoremap ,gf :exec 'vimgrep '.expand('<cword>').' ./**/*.{c,h} <bar> copen'<cr>
+nnoremap ,gf :exec 'vimgrep '.expand('<cword>').' ./**/*.{c,h,cpp,ino} <bar> copen'<cr>
+
+"find something with ripgrep
+nnoremap ,rg :Rg<cr>
 
 "yank entire word under cursor to clipboard
 "map <C-C> "+yiW
@@ -384,19 +444,30 @@ vnoremap <space> :
 "goes to next id in atlas code
 "pattern is taken from atlas.vim file for id number
 "TODO put these in a file only sourced when .ATL is opened
-nnoremap <leader>. /^[BE ][ 0-9]\{,6}\><cr>:noh<cr>
-nnoremap <leader>m ?^[BE ][ 0-9]\{,6}\><cr>:noh<cr>
+nnoremap <silent><leader>. /^[BE ][ 0-9]\{,6}\><cr>:noh<cr>
+nnoremap <silent><leader>m ?^[BE ][ 0-9]\{,6}\><cr>:noh<cr>
 
 "goes to next testid = ... statement
 "uses search() to avoid polluting search history and not overwriting current search
-nnoremap <silent> <leader>. :call search("testid = ",'W')<cr>
-nnoremap <silent> <leader>m :call search("testid = ",'Wb')<cr>
+"nnoremap <silent> <leader>. :call search("testid = ",'W')<cr>
+"nnoremap <silent> <leader>m :call search("testid = ",'Wb')<cr>
 
 "switch (y) option (o) fixed (turns on scrollbind)
-nnoremap <silent> yof :set scrollbind!<cr>
+nnoremap yof :set scrollbind!<cr>
 
 "switch clipboard between "" and unnamedplus
 nnoremap yoy :set clipboard=<c-r>=&clipboard == "" ? "unnamedplus" : ""<cr><cr>
+
+" WSL yank support
+if exists("s:wsl")
+    let s:clip = '/mnt/c/Windows/System32/clip.exe'  " change this path according to your mount point
+    if executable(s:clip)
+        augroup WSLYank
+            autocmd!
+            autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
+        augroup END
+    endif
+endif
 
 "close buffer without closing window
 nnoremap <silent> Q :bp<bar>bd #<cr>
@@ -442,15 +513,15 @@ autocmd VimLeave * call system('echo -n ' . shellescape(getreg('+')) .
 "escape from terminal
 tnoremap jk <c-\><c-n>
 
-"insert date in format: 'Feb 7, 2019'
-nnoremap <silent> <leader>d :put =strftime('%b %d, %Y')<cr>kJ
 "insert full datetime
-nnoremap <silent> <leader>d :put =strftime('%a %x %X')<cr>
+nnoremap <silent> <leader>d o<esc>:put =strftime('%a %x %X')<cr>o
+"insert timestamp
+nnoremap <silent> <leader>a o<esc>:put =strftime('%X')<cr>o
 
 
 "stop running process and run last command in a vim terminal
-nnoremap <leader>j :call term_sendkeys(2,"\<c-c>\<up>\<cr>")<cr>
-nnoremap <leader>p :call term_sendkeys(2,"ll")<cr>
+" nnoremap <leader>j :call term_sendkeys(2,"\<c-c>\<up>\<cr>")<cr>
+" nnoremap <leader>p :call term_sendkeys(2,"ll")<cr>
 
 "retart report-bot in terminal window above
 nmap <leader>rb <c-k><c-c>python report-bot.py<c-m><c-w>j
@@ -467,23 +538,23 @@ set undodir=~/.vim/undo-dir
 set undofile
 
 " make command
-nnoremap <leader>m :!make<cr>
+"nnoremap <leader>m :!make<cr>
 
 function! s:DiffWithSaved()
-  let filetype=&ft
-  diffthis
-  vnew | r # | normal! 1Gdd
-  diffthis
-  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+    let filetype=&ft
+    diffthis
+    vnew | r # | normal! 1Gdd
+    diffthis
+    exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
 endfunction
 com! DiffSaved call s:DiffWithSaved()
 
 function! s:DiffWithSVNCheckedOut()
-  let filetype=&ft
-  diffthis
-  vnew | exe "%!svn cat " . expand("#:p")
-  diffthis
-  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+    let filetype=&ft
+    diffthis
+    vnew | exe "%!svn cat " . expand("#:p")
+    diffthis
+    exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
 endfunction
 com! DiffSVN call s:DiffWithSVNCheckedOut()
 
@@ -507,3 +578,89 @@ match CursorLineNr /\v(SetTestID.*\()@<=\d+/
 
 "cancel and escape from command line with jk
 cmap jk <c-u><esc>
+
+abbr nasa NASA
+" Search for selected text, forwards or backwards.
+" taken from vim wiki
+vnoremap <silent> * :<C-U>
+            \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+            \gvy/<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
+            \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+            \gVzv:call setreg('"', old_reg, old_regtype)<CR>
+vnoremap <silent> # :<C-U>
+            \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+            \gvy?<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
+            \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+            \gVzv:call setreg('"', old_reg, old_regtype)<CR>
+
+" make todos more visible (only uppercase)
+match Todo /TODO/
+match TODO /TODO/
+
+nnoremap yot :set tabstop=<c-r>=&tabstop == "4" ? "8" : "4"<cr><cr>
+
+" function for doing weekly status
+function! WeeklyStatus()
+    vnew
+    let l:dayOfWeek = strftime("%w") "monday is 1, wednesday is 3
+    let l:seconds = (l:dayOfWeek-1)*24*60*60 "convert to seconds, as localtime() gives unix epoch
+    let l:subject = strftime("Status report for week starting %a %B %d, %Y", localtime() - l:seconds)
+    put =l:subject
+    norm kddo
+    norm o
+endfunction
+nnoremap <silent> <leader>W :call WeeklyStatus()<CR>
+
+if has("patch-8.1.0360")
+    set diffopt+=internal,algorithm:patience
+endif
+
+let s:fontsize = 12
+function! AdjustFontSize(amount)
+let s:fontsize = s:fontsize+a:amount
+  :execute "GuiFont! Consolas:h" . s:fontsize
+endfunction
+
+noremap <C-ScrollWheelUp> :call AdjustFontSize(1)<CR>
+noremap <C-ScrollWheelDown> :call AdjustFontSize(-1)<CR>
+inoremap <C-ScrollWheelUp> <Esc>:call AdjustFontSize(1)<CR>a
+inoremap <C-ScrollWheelDown> <Esc>:call AdjustFontSize(-1)<CR>a
+
+autocmd FileType c   setlocal commentstring=//\ %s
+autocmd FileType cpp setlocal commentstring=//\ %s
+
+command! -nargs=? -range Dec2hex call s:Dec2hex(<line1>, <line2>, '<args>')
+function! s:Dec2hex(line1, line2, arg) range
+  if empty(a:arg)
+    if histget(':', -1) =~# "^'<,'>" && visualmode() !=# 'V'
+      let cmd = 's/\%V\<\d\+\>/\=printf("0x%x",submatch(0)+0)/g'
+    else
+      let cmd = 's/\<\d\+\>/\=printf("0x%x",submatch(0)+0)/g'
+    endif
+    try
+      execute a:line1 . ',' . a:line2 . cmd
+    catch
+      echo 'Error: No decimal number found'
+    endtry
+  else
+    echo printf('%x', a:arg + 0)
+  endif
+endfunction
+
+command! -nargs=? -range Hex2dec call s:Hex2dec(<line1>, <line2>, '<args>')
+function! s:Hex2dec(line1, line2, arg) range
+  if empty(a:arg)
+    if histget(':', -1) =~# "^'<,'>" && visualmode() !=# 'V'
+      let cmd = 's/\%V0x\x\+/\=submatch(0)+0/g'
+    else
+      let cmd = 's/0x\x\+/\=submatch(0)+0/g'
+    endif
+    try
+      execute a:line1 . ',' . a:line2 . cmd
+    catch
+      echo 'Error: No hex number starting "0x" found'
+    endtry
+  else
+    echo (a:arg =~? '^0x') ? a:arg + 0 : ('0x'.a:arg) + 0
+  endif
+endfunction
